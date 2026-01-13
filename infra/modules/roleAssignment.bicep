@@ -12,12 +12,18 @@ param roleDefinitionId string
 ])
 param principalType string = 'ServicePrincipal'
 
-@description('The scope of the role assignment (resource ID)')
-param scope string
+@description('The ACR resource ID to scope the role assignment to')
+param acrResourceId string
 
+// Reference the existing ACR resource
+resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
+  name: split(acrResourceId, '/')[8]
+}
+
+// Create role assignment on the ACR
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(principalId, roleDefinitionId, scope)
-  scope: resourceGroup()
+  name: guid(principalId, roleDefinitionId, acrResourceId)
+  scope: acr
   properties: {
     roleDefinitionId: roleDefinitionId
     principalId: principalId

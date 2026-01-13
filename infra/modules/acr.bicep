@@ -18,7 +18,7 @@ param sku string = 'Basic'
 @description('Enable admin user')
 param adminUserEnabled bool = false
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: name
   location: location
   tags: tags

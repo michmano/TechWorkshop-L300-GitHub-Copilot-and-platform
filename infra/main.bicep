@@ -143,7 +143,7 @@ module acrPullRoleAssignment 'modules/roleAssignment.bicep' = {
     principalId: appService.outputs.principalId
     roleDefinitionId: acrPullRoleId
     principalType: 'ServicePrincipal'
-    scope: acr.outputs.id
+    acrResourceId: acr.outputs.id
   }
 }
 
