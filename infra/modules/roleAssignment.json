@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "7561130037422357474"
+    }
+  },
+  "parameters": {
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID to assign the role to"
+      }
+    },
+    "roleDefinitionId": {
+      "type": "string",
+      "metadata": {
+        "description": "The role definition ID to assign"
+      }
+    },
+    "principalType": {
+      "type": "string",
+      "defaultValue": "ServicePrincipal",
+      "allowedValues": [
+        "ServicePrincipal",
+        "User",
+        "Group"
+      ],
+      "metadata": {
+        "description": "The principal type"
+      }
+    },
+    "scope": {
+      "type": "string",
+      "metadata": {
+        "description": "The scope of the role assignment (resource ID)"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(parameters('principalId'), parameters('roleDefinitionId'), parameters('scope'))]",
+      "properties": {
+        "roleDefinitionId": "[parameters('roleDefinitionId')]",
+        "principalId": "[parameters('principalId')]",
+        "principalType": "[parameters('principalType')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the role assignment"
+      },
+      "value": "[guid(parameters('principalId'), parameters('roleDefinitionId'), parameters('scope'))]"
+    }
+  }
+}

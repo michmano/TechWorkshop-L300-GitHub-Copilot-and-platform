@@ -1,0 +1,141 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "7063789435268695676"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the App Service"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the app"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Tags for the resource"
+      }
+    },
+    "appServicePlanId": {
+      "type": "string",
+      "metadata": {
+        "description": "App Service Plan ID"
+      }
+    },
+    "acrLoginServer": {
+      "type": "string",
+      "metadata": {
+        "description": "ACR login server"
+      }
+    },
+    "dockerImageAndTag": {
+      "type": "string",
+      "defaultValue": "nginx:latest",
+      "metadata": {
+        "description": "Docker image and tag"
+      }
+    },
+    "appInsightsConnectionString": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Application Insights connection string"
+      }
+    },
+    "appInsightsInstrumentationKey": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Application Insights instrumentation key"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "kind": "app,linux,container",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "serverFarmId": "[parameters('appServicePlanId')]",
+        "httpsOnly": true,
+        "siteConfig": {
+          "linuxFxVersion": "[format('DOCKER|{0}/{1}', parameters('acrLoginServer'), parameters('dockerImageAndTag'))]",
+          "acrUseManagedIdentityCreds": true,
+          "appSettings": [
+            {
+              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+              "value": "false"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_URL",
+              "value": "[format('https://{0}', parameters('acrLoginServer'))]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[parameters('appInsightsConnectionString')]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[parameters('appInsightsInstrumentationKey')]"
+            }
+          ],
+          "alwaysOn": false,
+          "http20Enabled": true
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the App Service"
+      },
+      "value": "[resourceId('Microsoft.Web/sites', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the App Service"
+      },
+      "value": "[parameters('name')]"
+    },
+    "defaultHostname": {
+      "type": "string",
+      "metadata": {
+        "description": "The default hostname"
+      },
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-09-01').defaultHostName]"
+    },
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity"
+      },
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-09-01', 'full').identity.principalId]"
+    }
+  }
+}

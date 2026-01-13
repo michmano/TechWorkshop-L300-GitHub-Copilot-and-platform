@@ -11,7 +11,7 @@ param tags object = {}
 param friendlyName string = 'Zava Storefront AI Hub'
 
 @description('Description of the hub')
-param description string = 'AI Foundry Hub for GPT-4 and Phi models'
+param hubDescription string = 'AI Foundry Hub for GPT-4 and Phi models'
 
 @description('Storage account ID for the hub')
 param storageAccountId string = ''
@@ -39,7 +39,7 @@ resource aiHub 'Microsoft.MachineLearningServices/workspaces@2024-04-01' = {
   }
   properties: {
     friendlyName: friendlyName
-    description: description
+    description: hubDescription
     storageAccount: !empty(storageAccountId) ? storageAccountId : null
     keyVault: !empty(keyVaultId) ? keyVaultId : null
     applicationInsights: !empty(applicationInsightsId) ? applicationInsightsId : null

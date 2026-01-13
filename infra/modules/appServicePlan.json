@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "9562252661693381728"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the App Service Plan"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the plan"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Tags for the resource"
+      }
+    },
+    "sku": {
+      "type": "object",
+      "defaultValue": {
+        "name": "B1",
+        "tier": "Basic",
+        "capacity": 1
+      },
+      "metadata": {
+        "description": "SKU for the plan"
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "linux",
+      "metadata": {
+        "description": "Kind of plan"
+      }
+    },
+    "reserved": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Reserved (true for Linux)"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "kind": "[parameters('kind')]",
+      "properties": {
+        "reserved": "[parameters('reserved')]"
+      },
+      "sku": "[parameters('sku')]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the App Service Plan"
+      },
+      "value": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the App Service Plan"
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}

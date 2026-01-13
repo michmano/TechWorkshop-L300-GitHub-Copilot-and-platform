@@ -128,7 +128,7 @@ module aiHub 'modules/aiHub.bicep' = {
     location: location
     tags: tags
     friendlyName: 'Zava Storefront AI Hub'
-    description: 'AI Foundry Hub for GPT-4 and Phi models in ${environmentName} environment'
+    hubDescription: 'AI Foundry Hub for GPT-4 and Phi models in ${environmentName} environment'
     storageAccountId: storageAccount.outputs.id
     keyVaultId: keyVault.outputs.id
     applicationInsightsId: appInsights.outputs.id
