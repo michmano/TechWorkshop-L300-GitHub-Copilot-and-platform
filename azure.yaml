@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: zavastorefrontinfra
+metadata:
+  template: zavastorefrontinfra@0.0.1-beta
+
+services:
+  web:
+    project: ./src
+    language: csharp
+    host: appservice
+
+infra:
+  path: ./infra
+
+hooks:
+  postprovision:
+    shell: sh
+    run: |
+      echo "Provisioning complete. You can now build and push your container image."
+      echo "ACR Name: $AZURE_CONTAINER_REGISTRY_NAME"
+      echo "To build and push the image, run:"
+      echo "  az acr build --registry $AZURE_CONTAINER_REGISTRY_NAME --image zavastore:latest ."
+
+  predeploy:
+    shell: sh
+    run: |
+      echo "Building and pushing container image to ACR..."
+      az acr build --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image zavastore:latest .
+
+  postdeploy:
+    shell: sh
+    run: |
+      echo "Deployment complete!"
+      echo "Web App URL: https://${AZURE_APP_SERVICE_NAME}.azurewebsites.net"
